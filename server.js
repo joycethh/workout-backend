@@ -17,6 +17,11 @@ app.use((req, res, next) => {
 // routes
 app.use("/api/workouts", workoutRoutes);
 
+//for deployment
+app.get("/", (req, res) => {
+  res.send("WORKOUT APP IS RUNNING.");
+});
+
 //connect to db
 mongose
   .connect(process.env.MONGDB_URI)
