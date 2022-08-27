@@ -4,17 +4,15 @@ const express = require("express");
 const mongose = require("mongoose");
 const cors = require("cors");
 const workoutRoutes = require("./routes/workouts");
+const bodyParser = require("body-parser");
 
 //express app
 const app = express();
 
 //global middleware
-app.use(express.json());
+app.use(bodyParser.json({ limit: "30mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
-app.use((req, res, next) => {
-  console.log(req.path, req.method);
-  next();
-});
 
 // routes
 app.use("/api/workouts", workoutRoutes);
