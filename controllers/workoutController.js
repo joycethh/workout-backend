@@ -3,22 +3,26 @@ const mongoose = require("mongoose");
 
 //get all workouts
 const getWorkouts = async (req, res) => {
-  const workouts = await Workout.find({}).sort({ createdAt: -1 });
+  try {
+    const workouts = await Workout.find().sort({ createdAt: -1 });
 
-  res.status(200).json(workouts);
+    res.status(200).json(workouts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 //get a single workout
 const getAWorkout = async (req, res) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such id " });
+
+  try {
+    const foundWorkout = await Workout.findById(id);
+
+    res.status(200).json(foundWorkout);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
-  const foundWorkout = await Workout.findById(id);
-  if (!foundWorkout) {
-    return res.status(404).json({ error: "No such workout found" });
-  }
-  res.status(200).json(foundWorkout);
 };
 
 //create new workout
@@ -57,14 +61,13 @@ const createWorkOut = async (req, res) => {
 const deleteWorkout = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such id " });
+    return res.status(404).json({ error: `No workout with id: ${id}` });
   }
-
   const foundWorkout = await Workout.findOneAndDelete({ _id: id });
   if (!foundWorkout) {
     return res.status(400).json({ error: "No such workout found to delete" });
   }
-  res.status(200).json(foundWorkout);
+  res.status(200).json({ mssg: "the seleted workout is deleted" });
 };
 
 //update a workout
