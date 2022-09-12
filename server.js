@@ -4,6 +4,7 @@ const express = require("express");
 const mongose = require("mongoose");
 const cors = require("cors");
 const workoutRoutes = require("./routes/workouts");
+const userRoutes = require("./routes/user");
 const bodyParser = require("body-parser");
 
 //express app
@@ -16,6 +17,7 @@ app.use(cors());
 
 // routes
 app.use("/api/workouts", workoutRoutes);
+app.use("/api/user", userRoutes);
 
 //for deployment
 app.get("/", (req, res) => {
