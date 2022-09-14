@@ -4,7 +4,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.SECREAT, { expiresIn: "3d" });
+  return jwt.sign({ id }, process.env.SECREAT, { expiresIn: "1h" });
 };
 
 //login user
