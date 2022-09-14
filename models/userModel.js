@@ -23,7 +23,7 @@ userSchema.statics.login = async function (email, password) {
   }
 
   //search db to see if there is such user
-  const user = await User.findOne({ email });
+  const user = await this.findOne({ email });
   //a. user not existed
   if (!user) {
     throw Error(`User doesn't exist`);
