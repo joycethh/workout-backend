@@ -14,7 +14,7 @@ const loginUser = async (req, res) => {
   //user exist, create token --- send token
   try {
     const user = await User.login(email, password);
-    const token = user.createToken(user._id);
+    const token = createToken(user._id);
     res.status(200).json({ email, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
