@@ -1,5 +1,15 @@
 const Workout = require("../models/workoutModel");
 const mongoose = require("mongoose");
+//for example home page
+const fetchAll = async (req, res) => {
+  try {
+    const workouts = await Workout.find().sort({ createdAt: -1 });
+
+    res.status(200).json(workouts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 //get all workouts
 const getWorkouts = async (req, res) => {
@@ -104,4 +114,5 @@ module.exports = {
   getAWorkout,
   deleteWorkout,
   updateWorkout,
+  fetchAll,
 };
