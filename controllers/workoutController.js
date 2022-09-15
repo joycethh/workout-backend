@@ -1,10 +1,22 @@
 const Workout = require("../models/workoutModel");
 const mongoose = require("mongoose");
+//for example home page
+const fetchAll = async (req, res) => {
+  try {
+    const workouts = await Workout.find().sort({ createdAt: -1 });
+
+    res.status(200).json(workouts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 //get all workouts
 const getWorkouts = async (req, res) => {
+  const creator = req.userId;
+
   try {
-    const workouts = await Workout.find().sort({ createdAt: -1 });
+    const workouts = await Workout.find({ creator }).sort({ createdAt: -1 });
 
     res.status(200).json(workouts);
   } catch (error) {
@@ -49,7 +61,14 @@ const createWorkOut = async (req, res) => {
 
   //add doc to db
   try {
-    const workout = await Workout.create({ title, reps, load });
+    const userId = req.userId;
+
+    const workout = await Workout.create({
+      title,
+      reps,
+      load,
+      creator: userId,
+    });
     res.status(200).json(workout);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -67,7 +86,7 @@ const deleteWorkout = async (req, res) => {
   if (!foundWorkout) {
     return res.status(400).json({ error: "No such workout found to delete" });
   }
-  res.status(200).json({ mssg: "the seleted workout is deleted" });
+  res.status(200).json(foundWorkout);
 };
 
 //update a workout
@@ -95,4 +114,5 @@ module.exports = {
   getAWorkout,
   deleteWorkout,
   updateWorkout,
+  fetchAll,
 };
