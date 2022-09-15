@@ -1,7 +1,8 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
 
-const Auth = (req, res, next) => {
+const Auth = async (req, res, next) => {
   //verify the token
   //1. extract the token from the incoming req's Authorization header ---> req.headers
   //2. use jwt to decode the token
@@ -9,12 +10,11 @@ const Auth = (req, res, next) => {
   //3.1 if so, compare to the id extracted from token
   //4.  fire next function
   try {
-    const token = req.headers.authorization.split("")[1];
-    console.log("req.headers", req.headers);
-    const decodedToken = jwt.verify(token, process.env.SECREAT);
-    const userId = decodedToken.userId;
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedData = jwt.verify(token, process.env.SECREAT);
+    const userId = decodedData.userId;
     if (req.body.userId && req.body.userId !== userId) {
-      throw Error("Invalid user ID");
+      throw new Error("Invalid user ID");
     } else {
       next();
     }
@@ -23,5 +23,28 @@ const Auth = (req, res, next) => {
     res.status(401).json({ error: "Invalid request" });
   }
 };
+
+// const Auth = async (req, res, next) => {
+//   const { authorization } = req.headers;
+//   console.log("destructured authorization", authorization);
+
+//   if (!authorization) {
+//     return res
+//       .status(400)
+//       .json({ error: "Authorization token is required/ You need to login" });
+//   }
+
+//   const token = authorization.split(" ")[1];
+//   console.log("token", token);
+
+//   try {
+//     const { _id } = jwt.verify(token, process.env.SECREAT);
+//     req.user = await User.findOne({ _id }).select("_id");
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//     res.status(401).json({ error: "Invalid Request" });
+//   }
+// };
 
 module.exports = Auth;
