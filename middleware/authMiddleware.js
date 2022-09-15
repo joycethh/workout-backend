@@ -11,11 +11,12 @@ const Auth = async (req, res, next) => {
   //4.  fire next function
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const decodedData = jwt.verify(token, process.env.SECREAT);
-    const userId = decodedData.userId;
-    if (req.body.userId && req.body.userId !== userId) {
-      throw new Error("Invalid user ID");
-    } else {
+    let decodedData;
+    if (token) {
+      decodedData = jwt.verify(token, process.env.SECREAT);
+
+      req.userId = decodedData.id;
+
       next();
     }
   } catch (error) {
